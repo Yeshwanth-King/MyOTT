@@ -10,8 +10,9 @@ import Logo from "../assets/logo.svg";
 import { useEffect, useState } from "react";
 import { supabase } from "../libs/supbase";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
-export default function Navbar() {
+export default function Navbar({ links }) {
   const pathName = usePathname();
   const router = useRouter();
 
@@ -41,18 +42,11 @@ export default function Navbar() {
       if (error) throw error;
       setUser(null);
       toast.success("Logged out");
+      router.push("/auth");
     } catch (error) {
       toast.error(error.message);
     }
   };
-
-  const links = [
-    { name: "Home", href: "/home" },
-    { name: "Tv Shows", href: "/home/shows" },
-    { name: "Movies", href: "/home/movies" },
-    { name: "Recently Added", href: "/home/recently" },
-    { name: "My List", href: "/home/user/list" },
-  ];
 
   return (
     <div className="w-full  absolute top-0 z-10  mx-auto items-center justify-between px-5 sm:px-6 py-5 lg:px-8 flex">

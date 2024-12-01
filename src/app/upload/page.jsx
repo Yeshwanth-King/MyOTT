@@ -7,7 +7,6 @@ import back from "@/app/assets/background.jpg";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
-import Navbar from "../components/NavBar";
 import { toast } from "sonner";
 import { supabase } from "../libs/supbase";
 import { useDropzone } from "react-dropzone";
@@ -32,6 +31,7 @@ export default function UploadContent() {
       const selectedFile = acceptedFiles[0];
       if (selectedFile && selectedFile.size > 5 * 1024 * 1024) {
         setError("Image size must be under 5MB.");
+        toast.error("Image size must be under 5MB.");
         setImageFile(null);
       } else {
         setError("");
@@ -53,6 +53,7 @@ export default function UploadContent() {
       const selectedFile = acceptedFiles[0];
       if (selectedFile && selectedFile.size > 10 * 1024 * 1024) {
         setError("Video size must be under 10MB.");
+        toast.error("Video size must be under 10MB.");
         setVideoFile(null);
       } else {
         setError("");
@@ -137,7 +138,6 @@ export default function UploadContent() {
       }}
       className="flex flex-col items-center min-h-screen"
     >
-      <Navbar />
       <div className="mx-5 ">
         <Card className="w-full mt-20 max-w-lg sm:mx-auto bg-gray-200 rounded-lg shadow-lg p-8">
           <CardHeader>

@@ -38,7 +38,7 @@ export default function RecentlyAdded() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-8 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-8 gap-6 px-6">
       {movies.map((movie) => (
         <Link
           href={`/movie/${movie.id}`}
@@ -70,7 +70,13 @@ export default function RecentlyAdded() {
                 </p>
                 <div className="mt-2 flex flex-col items-center">
                   <p className="text-sm text-gray-400">
-                    10 | {movie.created_at.split("T")[0]} | 180 mins
+                    10 |{" "}
+                    {movie.created_at
+                      .split("T")[0]
+                      .split("-")
+                      .reverse()
+                      .join("-")}{" "}
+                    | 180 mins
                   </p>
                 </div>
               </div>

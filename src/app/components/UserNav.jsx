@@ -72,7 +72,9 @@ export default function UserNav({ user, signOut }) {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer" onClick={signOut}>
+              Sign Out
+            </DropdownMenuItem>
           </>
         )}
       </DropdownMenuContent>

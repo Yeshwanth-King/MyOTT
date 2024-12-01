@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { PlayCircle } from "lucide-react";
+import { FaRegCirclePlay } from "react-icons/fa6";
 import { useState } from "react";
 import PlayVideoModal from "./PlayVideoModal"; // Assuming this modal handles video playback.
 
@@ -11,8 +11,11 @@ export default function MovieButtons({ title, description, fileUrl }) {
   return (
     <>
       {/* Play Button */}
-      <Button onClick={() => setOpen(true)} className="text-lg font-medium">
-        <PlayCircle className="mr-2 h-6 w-6" /> Play
+      <Button
+        onClick={() => setOpen(true)}
+        className="px-6 py-2 bg-red-600 rounded-lg hover:bg-red-500 transition duration-300 text-xl"
+      >
+        <FaRegCirclePlay className="text-lg" /> Play
       </Button>
 
       {/* Learn More Button */}

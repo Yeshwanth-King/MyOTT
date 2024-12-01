@@ -19,7 +19,6 @@ export default function TopMovie() {
           .eq("id", 11)
           .single();
         if (error) throw error;
-        console.log(test);
 
         setData(test);
       } catch (error) {
