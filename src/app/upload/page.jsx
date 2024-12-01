@@ -1,73 +1,127 @@
 "use client";
 
-import axios from "axios";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import back from "@/app/assets/background.jpg";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import Navbar from "../components/NavBar";
 import { toast } from "sonner";
 import { supabase } from "../libs/supbase";
+import { useDropzone } from "react-dropzone";
+import axios from "axios";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function UploadContent() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [file, setFile] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [videoFile, setVideoFile] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile && selectedFile.size > 10 * 1024 * 1024) {
-      setError("File size must be under 10MB.");
-      setFile(null);
-    } else {
-      setError("");
-      setFile(selectedFile);
-    }
-  };
+  // Dropzone for image
+  const {
+    getRootProps: getImageRootProps,
+    getInputProps: getImageInputProps,
+    isDragActive: isImageDragActive,
+  } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      const selectedFile = acceptedFiles[0];
+      if (selectedFile && selectedFile.size > 5 * 1024 * 1024) {
+        setError("Image size must be under 5MB.");
+        setImageFile(null);
+      } else {
+        setError("");
+        setImageFile(selectedFile);
+      }
+    },
+    accept: "image/*",
+    maxFiles: 1,
+    maxSize: 5 * 1024 * 1024, // 5MB limit
+  });
+
+  // Dropzone for video
+  const {
+    getRootProps: getVideoRootProps,
+    getInputProps: getVideoInputProps,
+    isDragActive: isVideoDragActive,
+  } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      const selectedFile = acceptedFiles[0];
+      if (selectedFile && selectedFile.size > 10 * 1024 * 1024) {
+        setError("Video size must be under 10MB.");
+        setVideoFile(null);
+      } else {
+        setError("");
+        setVideoFile(selectedFile);
+      }
+    },
+    accept: "video/*",
+    maxFiles: 1,
+    maxSize: 10 * 1024 * 1024, // 10MB limit
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { data: session, error } = await supabase.auth.getSession();
-    const token = session.session.access_token;
-    if (!title || !description || !file) {
+    const { data: session } = await supabase.auth.getSession();
+    const token = session?.session?.access_token;
+
+    if (!title || !description || !imageFile || !videoFile) {
       setError("All fields are required.");
       return;
     }
 
     setLoading(true);
     try {
-      console.log(file);
-      const { data, error: fileError } = await supabase.storage
+      // Upload image to Supabase storage
+      const { data: imageData, error: imageError } = await supabase.storage
         .from("uploads")
-        .upload(`movies/${Date.now()}.${file.name.split(".")[1]}`, file);
-      if (fileError) throw fileError;
-      console.log(data.fullPath);
+        .upload(
+          `coverImages/${Date.now()}.${imageFile.name.split(".").pop()}`,
+          imageFile
+        );
+      if (imageError) throw imageError;
 
-      const data1 = { title, description, file_url: data.path };
+      // Upload video to Supabase storage
+      const { data: videoData, error: videoError } = await supabase.storage
+        .from("uploads")
+        .upload(
+          `movies/${Date.now()}.${videoFile.name.split(".").pop()}`,
+          videoFile
+        );
+      if (videoError) throw videoError;
+
+      // Save metadata to database
+      const data1 = {
+        title,
+        description,
+        image_url: imageData.path,
+        video_url: videoData.path,
+      };
+
       const response = await axios.post("/api/upload-content", data1, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (response.data.error) {
-        toast.error(response.data.error);
-        setError(response.data.error);
+      if (response.error) {
+        toast.error(response.error);
+        setError(response.error);
         return;
       }
 
       toast.success("Content uploaded successfully!");
       setTitle("");
       setDescription("");
-      setFile(null);
+      setImageFile(null);
+      setVideoFile(null);
     } catch (error) {
       setError(error.message);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -76,18 +130,18 @@ export default function UploadContent() {
   return (
     <div
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${back.src})`, // Black overlay with 50% opacity
-        backgroundSize: "cover", // Ensure the image covers the entire area
-        backgroundRepeat: "no-repeat", // Avoid repetition
-        backgroundPosition: "center", // Center the image
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${back.src})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
       }}
-      className="flex flex-col items-center  min-h-screen"
+      className="flex flex-col items-center min-h-screen"
     >
       <Navbar />
-      <div className="mx-5 mt-20">
-        <Card className="w-full max-w-lg  sm:mx-auto bg-zinc-800 rounded-lg shadow-lg p-6">
+      <div className="mx-5 ">
+        <Card className="w-full mt-20 max-w-lg sm:mx-auto bg-gray-200 rounded-lg shadow-lg p-8">
           <CardHeader>
-            <CardTitle className="text-2xl font-semibold text-white">
+            <CardTitle className="text-2xl font-semibold text-gray-800">
               Upload Content
             </CardTitle>
           </CardHeader>
@@ -96,7 +150,7 @@ export default function UploadContent() {
               <div>
                 <Label
                   htmlFor="title"
-                  className="text-sm font-medium text-gray-300"
+                  className="text-sm font-medium text-gray-700"
                 >
                   Title
                 </Label>
@@ -105,14 +159,14 @@ export default function UploadContent() {
                   id="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Name of Movie"
-                  className="mt-2 px-4 py-2 rounded-md border border-gray-600 bg-white  focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Name of Content"
+                  className="mt-2 px-4 py-2 rounded-md shadow-sm border border-gray-600 bg-white focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
               <div>
                 <Label
                   htmlFor="description"
-                  className="text-sm font-medium text-gray-300"
+                  className="text-sm font-medium text-gray-700"
                 >
                   Description
                 </Label>
@@ -121,30 +175,58 @@ export default function UploadContent() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Enter a description"
-                  className="mt-2 px-4 py-2 rounded-md border border-gray-600 bg-white  focus:ring-2 focus:ring-indigo-500"
+                  className="mt-2 px-4 py-2 rounded-md shadow-sm border border-gray-600 bg-white focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
+
+              {/* Image Dropzone */}
               <div>
-                <Label
-                  htmlFor="file"
-                  className="text-sm font-medium text-gray-300"
-                >
-                  Upload File (Video only, max 10MB)
+                <Label className="text-sm font-medium text-gray-700">
+                  Drag and Drop Image (Image only, max 5MB)
                 </Label>
-                <Input
-                  type="file"
-                  id="file"
-                  accept="video/*"
-                  onChange={handleFileChange}
-                  className="mt-2 px-4 py-2 cursor-pointer rounded-md border border-gray-600 bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition duration-300 ease-in-out"
-                  aria-label="Upload video file"
-                />
+                <div
+                  {...getImageRootProps()}
+                  className={`mt-2 px-4 py-6 rounded-md border-dashed border-2 border-gray-600 bg-gray-100 text-gray-800 cursor-pointer ${
+                    isImageDragActive ? "bg-gray-300" : ""
+                  }`}
+                >
+                  <input {...getImageInputProps()} />
+                  {isImageDragActive ? (
+                    <p>Drop the image here...</p>
+                  ) : imageFile ? (
+                    <p>{imageFile.name}</p>
+                  ) : (
+                    <p>Drag & drop an image here, or click to select one</p>
+                  )}
+                </div>
               </div>
+
+              {/* Video Dropzone */}
+              <div>
+                <Label className="text-sm font-medium text-gray-700">
+                  Drag and Drop Video (Video only, max 10MB)
+                </Label>
+                <div
+                  {...getVideoRootProps()}
+                  className={`mt-2 px-4 py-6 rounded-md border-dashed border-2 border-gray-600 bg-gray-100 text-gray-800 cursor-pointer ${
+                    isVideoDragActive ? "bg-gray-300" : ""
+                  }`}
+                >
+                  <input {...getVideoInputProps()} />
+                  {isVideoDragActive ? (
+                    <p>Drop the video here...</p>
+                  ) : videoFile ? (
+                    <p>{videoFile.name}</p>
+                  ) : (
+                    <p>Drag & drop a video here, or click to select one</p>
+                  )}
+                </div>
+              </div>
+
               <Button
                 type="submit"
                 className="w-full mt-4 py-2 rounded-md bg-indigo-600 text-white font-semibold disabled:bg-gray-500"
                 disabled={loading}
-                variant="contained"
               >
                 {loading ? (
                   <>
@@ -155,6 +237,7 @@ export default function UploadContent() {
                   "Submit"
                 )}
               </Button>
+              {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
             </form>
           </CardContent>
         </Card>

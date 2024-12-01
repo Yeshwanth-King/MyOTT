@@ -14,13 +14,13 @@ export async function POST(req) {
         return NextResponse.json({ error: "Authorization token is missing" }, { status: 401 });
     }
 
-    const { title, description, file_url } = await req.json();
+    const { title, description, image_url, video_url } = await req.json();
 
 
 
-    const fileUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/${file_url}`;
+    const video_url1 = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/${video_url}`;
+    const image_url1 = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/${image_url}`;
 
-    console.log(fileUrl);
 
 
     const { data: { user } } = await supabase.auth.getUser(token)
@@ -31,7 +31,8 @@ export async function POST(req) {
         user: id,
         title,
         description,
-        file_url: fileUrl,
+        image_url: image_url1,
+        video_url: video_url1,
     });
 
     if (dbError) {

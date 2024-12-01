@@ -16,10 +16,10 @@ export default function TopMovie() {
         const { data: test, error } = await supabase
           .from("movie")
           .select("*")
-          .eq("id", 9) // Change the ID if necessary
+          .eq("id", 11)
           .single();
         if (error) throw error;
-        console.log(test?.file_url);
+        console.log(test);
 
         setData(test);
       } catch (error) {
@@ -39,11 +39,11 @@ export default function TopMovie() {
         autoPlay
         muted
         loop
-        src={data?.file_url} // Ensure the file_url is correct
-        className="w-full absolute top-0 left-0 h-[60vh] object-cover z-0 brightness-[60%]"
+        src={data?.video_url} // Ensure the video_url is correct
+        className="w-full absolute top-0 left-0 h-[55vh] lg:h-[60vh] object-cover -z-10 brightness-[60%]"
       ></video>
 
-      <div className="absolute w-[90%] lg:w-[40%] mx-auto">
+      <div className="absolute w-[90%] lg:w-[40%] mx-auto sm:mx-2">
         <h1 className="text-white text-4xl md:text-5xl lg:text-6xl font-bold">
           {data?.title}
         </h1>
@@ -57,7 +57,7 @@ export default function TopMovie() {
           <MovieButtons
             title={data?.title}
             description={data?.description}
-            fileUrl={data?.file_url}
+            fileUrl={data?.video_url}
           />
         </div>
       </div>
