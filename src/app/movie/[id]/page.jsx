@@ -1,9 +1,10 @@
 "use client";
+
 import { supabase } from "@/app/libs/supbase";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-const moviePage = () => {
+export default function MoviePage() {
   const param = useParams();
   const [movie, setMovie] = useState(null);
 
@@ -19,6 +20,4 @@ const moviePage = () => {
   }, []);
 
   return <div className="text-white">{movie && movie.title}</div>;
-};
-
-export default moviePage;
+}
