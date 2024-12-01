@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-// import Logo from "../../public/netflix_logo.svg";
 import { GoBell, GoSearch } from "react-icons/go";
 import { usePathname, useRouter } from "next/navigation";
 import UserNav from "../components/UserNav";
@@ -11,12 +10,15 @@ import { useEffect, useState } from "react";
 import { supabase } from "../libs/supbase";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi"; // Import icons for toggle
 
 export default function Navbar({ links }) {
   const pathName = usePathname();
   const router = useRouter();
 
   const [user, setUser] = useState(null);
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false); // State to handle mobile menu visibility
+
   useEffect(() => {
     (async () => {
       const { data: userData } = await supabase.auth.getUser();
@@ -29,7 +31,6 @@ export default function Navbar({ links }) {
 
       if (error) {
         console.log(error.message);
-
         toast.error(error.message);
       }
       setUser(data);
@@ -49,12 +50,13 @@ export default function Navbar({ links }) {
   };
 
   return (
-    <div className="w-full  absolute top-0 z-10  mx-auto items-center justify-between px-5 sm:px-6 py-5 lg:px-8 flex">
+    <div className="w-full absolute top-0 z-10 mx-auto items-center justify-between px-5 sm:px-6 py-5 lg:px-8 flex">
       <div className="flex items-center">
         <Link href="/home" className="w-32">
-          <Image src={Logo} alt="Netflix logo" priority />
+          <Image src={Logo} alt="Logo" priority />
         </Link>
-        <ul className="lg:flex gap-x-4 ml-14 hidden">
+        {/* Desktop Navigation */}
+        <ul className="md:flex gap-x-4 ml-14 hidden">
           {links.map((link, idx) => (
             <div key={idx}>
               {pathName === link.href ? (
@@ -81,6 +83,43 @@ export default function Navbar({ links }) {
         </ul>
       </div>
 
+      {/* Mobile Menu Toggle */}
+      <div className="md:hidden flex items-center">
+        <Button
+          onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
+          // className="text-gray-300 focus:outline-none"
+        >
+          {isMobileMenuOpen ? (
+            <HiOutlineX className="w-6 h-6" />
+          ) : (
+            <HiOutlineMenuAlt3 className="w-6 h-6" />
+          )}
+        </Button>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="absolute top-16 left-0 w-[90%] mx-5 bg-black p-4 z-20 lg:hidden">
+          <ul className="flex flex-col gap-y-2">
+            {links.map((link, idx) => (
+              <li key={idx}>
+                <Link
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)} // Close menu on link click
+                  className={`block text-sm ${
+                    pathName === link.href
+                      ? "text-white font-semibold underline"
+                      : "text-gray-300 font-normal"
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="flex items-center gap-x-4 sm:gap-x-8">
         {user && (
           <>
@@ -90,7 +129,6 @@ export default function Navbar({ links }) {
                   ev.preventDefault();
                   router.push("/upload");
                 }}
-                className=""
               >
                 Upload
               </Button>
