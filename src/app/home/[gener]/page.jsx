@@ -108,14 +108,6 @@ export default function CategoryPage() {
                       />
                     </div>
                   </div>
-                  {params.gener === "list" && (
-                    <Button
-                      variant="destructive"
-                      className="absolute top-2 right-2 z-50"
-                    >
-                      <MdDelete className="text-xl" />
-                    </Button>
-                  )}
                 </Link>
               </>
             ))}
