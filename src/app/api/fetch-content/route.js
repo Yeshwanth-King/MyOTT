@@ -1,10 +1,24 @@
 import { supabase } from "@/app/libs/supbase";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req) {
     try {
+        // Get search query from the request URL
+        const url = new URL(req.url);
+        const searchTerm = url.searchParams.get("search");
+
+
+        // Build the query
+        let query = supabase.from("movie").select("*");
+
+        // Apply search filter if a search term is provided
+        if (searchTerm) {
+
+            query = query.ilike("title", `%${searchTerm}%`); // Adjust "title" to the column you want to search
+        }
+
         // Fetch data from Supabase
-        const { data, error } = await supabase.from("movies").select("*");
+        const { data, error } = await query;
 
         // Handle potential errors from Supabase
         if (error) {

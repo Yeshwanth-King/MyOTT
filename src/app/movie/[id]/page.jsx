@@ -26,7 +26,7 @@ export default function MoviePage() {
     <div className="flex flex-col items-center justify-center min-h-screen text-white">
       <div className="container mx-auto p-6 flex flex-col items-center md:flex-row md:space-x-8">
         {/* Movie Image */}
-        <div className="w-full md:w-1/3 mb-6 md:mb-0">
+        <div className="w-full my-10 md:w-1/3 mb-6 md:mb-0">
           <img
             src={movie.image_url} // assuming 'image_url' is a field in your movie data
             alt={movie.title}

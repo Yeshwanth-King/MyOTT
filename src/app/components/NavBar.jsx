@@ -14,7 +14,6 @@ import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi"; // Import icons 
 
 export default function Navbar({ links }) {
   const pathName = usePathname();
-  console.log(pathName);
   const router = useRouter();
 
   const [user, setUser] = useState(null);
@@ -138,7 +137,12 @@ export default function Navbar({ links }) {
             </div>
           </>
         )}
-        <GoSearch className="w-5 h-5 text-gray-300 cursor-pointer" />
+        <GoSearch
+          onClick={() => {
+            router.push("/search");
+          }}
+          className="w-5 h-5 text-gray-300 cursor-pointer"
+        />
         <GoBell className="h-5 w-5 text-gray-300 cursor-pointer" />
         <UserNav user={user} signOut={signOut} />
       </div>

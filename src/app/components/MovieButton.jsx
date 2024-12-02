@@ -27,15 +27,16 @@ export default function MovieButtons({ title, id, description, fileUrl }) {
 
         {/* Learn More Button */}
         {params.id ? (
-          <Button
-            onClick={() => setOpen(true)}
-            className="text-lg font-medium bg-white/40 hover:bg-white/30 text-white px-4 py-1 rounded-lg ml-3 transition duration-300"
-          >
-            <div className="flex justify-center items-center gap-2">
-              <MdInfoOutline className="text-lg" />
-              Learn More
-            </div>
-          </Button>
+          // <Button
+          //   onClick={() => setOpen(true)}
+          //   className="text-lg font-medium bg-white/40 hover:bg-white/30 text-white px-4 py-1 rounded-lg ml-3 transition duration-300"
+          // >
+          //   <div className="flex justify-center items-center gap-2">
+          //     <MdInfoOutline className="text-lg" />
+          //     Learn More
+          //   </div>
+          // </Button>
+          <></>
         ) : (
           <Link
             href={"/movie/" + id}
