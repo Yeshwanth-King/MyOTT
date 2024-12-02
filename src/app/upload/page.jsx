@@ -30,8 +30,8 @@ export default function UploadContent() {
     onDrop: (acceptedFiles) => {
       const selectedFile = acceptedFiles[0];
       if (selectedFile && selectedFile.size > 5 * 1024 * 1024) {
-        setError("Image size must be under 5MB.");
         toast.error("Image size must be under 5MB.");
+        setError("Image size must be under 5MB.");
         setImageFile(null);
       } else {
         setError("");
@@ -51,9 +51,12 @@ export default function UploadContent() {
   } = useDropzone({
     onDrop: (acceptedFiles) => {
       const selectedFile = acceptedFiles[0];
-      if (selectedFile && selectedFile.size > 10 * 1024 * 1024) {
-        setError("Video size must be under 10MB.");
+      if (selectedFile.size > 10 * 1024 * 1024) {
         toast.error("Video size must be under 10MB.");
+      }
+      if (selectedFile && selectedFile.size > 10 * 1024 * 1024) {
+        toast.error("Video size must be under 10MB.");
+        setError("Video size must be under 10MB.");
         setVideoFile(null);
       } else {
         setError("");
@@ -62,7 +65,7 @@ export default function UploadContent() {
     },
     accept: "video/*",
     maxFiles: 1,
-    maxSize: 10 * 1024 * 1024, // 10MB limit
+    // maxSize: 10 * 1024 * 1024, // 10MB limit
   });
 
   const handleSubmit = async (e) => {

@@ -16,9 +16,9 @@ export function MovieCard({
 
   return (
     <>
-      <button onClick={() => setOpen(true)} className="-mt-14">
+      {/* <button onClick={() => setOpen(true)} className="-mt-14">
         <PlayCircle className="h-20 w-20" />
-      </button>
+      </button> */}
 
       <div className="p-5 absolute bottom-0 left-0">
         <h1 className="font-bold text-lg line-clamp-1">{title}</h1>
