@@ -7,6 +7,8 @@ import { useState } from "react";
 import { FaArrowRight } from "react-icons/fa6";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MdDelete } from "react-icons/md";
+import { Button } from "@/components/ui/button";
 
 // Initialize Supabase client
 
@@ -70,42 +72,52 @@ export default function CategoryPage() {
               </div>
             ))
           : data?.map((movie) => (
-              <Link
-                href={"/movie/" + movie.id}
-                key={movie.id}
-                className="relative h-60 group"
-              >
-                <div className="absolute -top-0 group-hover:opacity-0 transition-all duration-500 z-50 left-10">
-                  <span className=" text-xl font-bold">{movie.title}</span>
-                </div>
-                <Image
-                  src={movie.image_url}
-                  alt="Movie"
-                  width={500}
-                  height={400}
-                  className="rounded-sm absolute w-full h-full object-cover"
-                />
-                <div className="h-60 relative z-10 w-full transform transition duration-500 hover:scale-110 opacity-0 hover:opacity-100">
-                  <div className="bg-gradient-to-b from-transparent via-black/50 to-black z-10 w-full h-full rounded-lg flex items-center justify-center">
-                    <Image
-                      src={movie.image_url}
-                      alt="Movie"
-                      width={800}
-                      height={800}
-                      className="absolute w-full h-full -z-10 rounded-lg object-cover"
-                    />
-
-                    <MovieCard
-                      key={movie.id}
-                      description={movie.description}
-                      title={movie.title}
-                      image_url={movie.image_url}
-                      video_url={movie.video_url}
-                      movieId={movie.id}
-                    />
+              <>
+                <Link
+                  href={"/movie/" + movie.id}
+                  key={movie.id}
+                  className="relative h-60 group"
+                >
+                  <div className="absolute -top-0 group-hover:opacity-0 transition-all duration-500 z-50 left-10">
+                    <span className=" text-xl font-bold">{movie.title}</span>
                   </div>
-                </div>
-              </Link>
+                  <Image
+                    src={movie.image_url}
+                    alt="Movie"
+                    width={500}
+                    height={400}
+                    className="rounded-sm absolute w-full h-full object-cover"
+                  />
+                  <div className="h-60 relative z-10 w-full transform transition duration-500 hover:scale-110 opacity-0 hover:opacity-100">
+                    <div className="bg-gradient-to-b from-transparent via-black/50 to-black z-10 w-full h-full rounded-lg flex items-center justify-center">
+                      <Image
+                        src={movie.image_url}
+                        alt="Movie"
+                        width={800}
+                        height={800}
+                        className="absolute w-full h-full -z-10 rounded-lg object-cover"
+                      />
+
+                      <MovieCard
+                        key={movie.id}
+                        description={movie.description}
+                        title={movie.title}
+                        image_url={movie.image_url}
+                        video_url={movie.video_url}
+                        movieId={movie.id}
+                      />
+                    </div>
+                  </div>
+                  {params.gener === "list" && (
+                    <Button
+                      variant="destructive"
+                      className="absolute top-2 right-2 z-50"
+                    >
+                      <MdDelete className="text-xl" />
+                    </Button>
+                  )}
+                </Link>
+              </>
             ))}
       </div>
     </div>

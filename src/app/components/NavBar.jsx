@@ -65,7 +65,7 @@ export default function Navbar({ links }) {
                 <li>
                   <Link
                     href={link.href}
-                    className="text-white font-semibold underline text-sm"
+                    className="text-white font-semibold underline text-lg"
                   >
                     {link.name}
                   </Link>
@@ -73,7 +73,7 @@ export default function Navbar({ links }) {
               ) : (
                 <li>
                   <Link
-                    className="text-gray-300 font-normal text-sm"
+                    className="text-gray-300 font-normal text-lg"
                     href={link.href}
                   >
                     {link.name}

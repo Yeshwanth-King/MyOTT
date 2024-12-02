@@ -18,7 +18,6 @@ export default function UploadContent() {
   const [description, setDescription] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   // Dropzone for image
@@ -31,16 +30,14 @@ export default function UploadContent() {
       const selectedFile = acceptedFiles[0];
       if (selectedFile && selectedFile.size > 5 * 1024 * 1024) {
         toast.error("Image size must be under 5MB.");
-        setError("Image size must be under 5MB.");
         setImageFile(null);
       } else {
-        setError("");
         setImageFile(selectedFile);
       }
     },
     accept: "image/*",
     maxFiles: 1,
-    maxSize: 5 * 1024 * 1024, // 5MB limit
+    // maxSize: 5 * 1024 * 1024, // 5MB limit
   });
 
   // Dropzone for video
@@ -50,16 +47,14 @@ export default function UploadContent() {
     isDragActive: isVideoDragActive,
   } = useDropzone({
     onDrop: (acceptedFiles) => {
+      console.log(acceptedFiles);
       const selectedFile = acceptedFiles[0];
       if (selectedFile.size > 10 * 1024 * 1024) {
         toast.error("Video size must be under 10MB.");
       }
       if (selectedFile && selectedFile.size > 10 * 1024 * 1024) {
-        toast.error("Video size must be under 10MB.");
-        setError("Video size must be under 10MB.");
         setVideoFile(null);
       } else {
-        setError("");
         setVideoFile(selectedFile);
       }
     },
@@ -74,7 +69,6 @@ export default function UploadContent() {
     const token = session?.session?.access_token;
 
     if (!title || !description || !imageFile || !videoFile) {
-      setError("All fields are required.");
       return;
     }
 
@@ -114,7 +108,6 @@ export default function UploadContent() {
 
       if (response.error) {
         toast.error(response.error);
-        setError(response.error);
         return;
       }
 
@@ -124,7 +117,6 @@ export default function UploadContent() {
       setImageFile(null);
       setVideoFile(null);
     } catch (error) {
-      setError(error.message);
       console.error(error);
     } finally {
       setLoading(false);
@@ -240,7 +232,6 @@ export default function UploadContent() {
                   "Submit"
                 )}
               </Button>
-              {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
             </form>
           </CardContent>
         </Card>
