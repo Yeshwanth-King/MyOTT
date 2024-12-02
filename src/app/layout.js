@@ -22,7 +22,7 @@ const links = [
   { name: "Home", href: "/home" },
   { name: "Movies", href: "/home/movies" },
   { name: "Recently Added", href: "/home/recently" },
-  { name: "My List", href: "/home/user/list" },
+  { name: "My List", href: "/home/list" },
 ];
 
 export default function RootLayout({ children }) {

@@ -4,6 +4,7 @@ import { MovieCard } from "../../components/MovieCard";
 import { supabase } from "../../libs/supbase";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { FaArrowRight } from "react-icons/fa6";
 import Link from "next/link";
 
 // Initialize Supabase client
@@ -14,6 +15,25 @@ async function getData(category, userId) {
       const { data: movies } = await supabase.from("movie").select("*");
 
       return movies;
+
+    case "recently":
+      const { data: recent } = await supabase
+        .from("movie")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      return recent;
+
+    case "list":
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
+      const { data: list } = await supabase
+        .from("movie")
+        .select("*")
+        .eq("user", user.id);
+      return list;
 
     default:
       throw new Error("Invalid category");
@@ -26,7 +46,7 @@ export default function CategoryPage() {
 
   (async () => {
     const { data: session } = await supabase.auth.getSession();
-    const data = await getData(params.gener, session.session.user.id);
+    const data = await getData(params?.gener, session?.session?.user?.id);
     setData(data);
   })();
 
@@ -37,7 +57,7 @@ export default function CategoryPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 px-5 sm:px-0 mt-5 mx-5 gap-6">
-        {data.map((movie) => (
+        {data?.map((movie) => (
           <Link
             href={"/movie/" + movie.id}
             key={movie.id}

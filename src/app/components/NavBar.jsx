@@ -14,6 +14,7 @@ import { HiOutlineMenuAlt3, HiOutlineX } from "react-icons/hi"; // Import icons 
 
 export default function Navbar({ links }) {
   const pathName = usePathname();
+  console.log(pathName);
   const router = useRouter();
 
   const [user, setUser] = useState(null);
@@ -41,13 +42,15 @@ export default function Navbar({ links }) {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      setUser(null);
       toast.success("Logged out");
+      setUser(null);
       router.push("/auth");
     } catch (error) {
       toast.error(error.message);
     }
   };
+
+  if (pathName.includes("auth")) return null;
 
   return (
     <div className="w-full absolute top-0 z-10 mx-auto items-center justify-between px-5 sm:px-6 py-5 lg:px-8 flex">

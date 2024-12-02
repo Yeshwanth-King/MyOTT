@@ -54,6 +54,7 @@ export default function TopMovie() {
         <div className="flex gap-x-3 mt-4">
           {/* You can re-enable MovieButtons here if needed */}
           <MovieButtons
+            id={data?.id}
             title={data?.title}
             description={data?.description}
             fileUrl={data?.video_url}

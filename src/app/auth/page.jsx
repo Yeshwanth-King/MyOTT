@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { supabase } from "../libs/supbase";
 import {
   Card,
@@ -65,7 +65,6 @@ const Auth = () => {
         }
 
         setMessage("Signup successful! Check your email for confirmation.");
-        router.push("/home");
       }
     } catch (err) {
       console.log(err);
@@ -74,6 +73,15 @@ const Auth = () => {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (data.user) {
+        router.push("/home");
+      }
+    })();
+  }, []);
 
   return (
     <div className="h-screen flex items-center justify-center bg-gradient-to-b from-zinc-900/50 to-zinc-700">
