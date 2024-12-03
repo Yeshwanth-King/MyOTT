@@ -20,7 +20,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.5.1",
-    "formidable": "^3.5.2",
     "lucide-react": "^0.462.0",
     "next": "15.0.3",
     "punycode": "^2.3.1",

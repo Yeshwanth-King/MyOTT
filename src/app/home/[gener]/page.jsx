@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MdDelete } from "react-icons/md";
 import { Button } from "@/components/ui/button";
+import MoviesList from "@/app/components/MovieList";
 
 // Initialize Supabase client
 
